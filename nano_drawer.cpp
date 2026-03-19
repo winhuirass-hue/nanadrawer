@@ -602,44 +602,41 @@ private:
             _titlebar.resize_to(int(a.width));
             int ncw = int(a.width) - TBW - SBW;
             int nch = int(a.height) - TH;
-            // resize tab area
-            API::window_size(_tab_area, {(unsigned)ncw, (unsigned)nch});
-            // reposition add/close tab buttons
-            _btn_tab_add  .move(rectangle{ncw-60,0,28,TABH});
-            _btn_tab_close.move(rectangle{ncw-30,0,28,TABH});
-            _tabbar.move(rectangle{0,0,ncw-64,TABH});
-            // resize active canvas
+            API::window_size(_tab_area, {unsigned(ncw), unsigned(nch)});
+            _btn_tab_add  .move(rectangle{ncw-60, 0, 28u, unsigned(TABH)});
+            _btn_tab_close.move(rectangle{ncw-30, 0, 28u, unsigned(TABH)});
+            _tabbar.move(rectangle{0, 0, unsigned(ncw-64), unsigned(TABH)});
             if (_active < _tabs.size())
                 _tabs[_active].canvas->move(
-                    rectangle{0,TABH,ncw,nch-TABH});
+                    rectangle{0, TABH, unsigned(ncw), unsigned(nch-TABH)});
         });
 
         // ── Toolbar ──────────────────────────────────────────
-        _toolbar.create(_form, rectangle{0,TH,TBW,FH-TH});
+        _toolbar.create(_form, rectangle{0,TH,unsigned(TBW),unsigned(FH-TH)});
         _toolbar.bgcolor(color_rgb(0xECEBE7));
         _build_toolbar(FH-TH);
 
         // ── Sidebar ──────────────────────────────────────────
-        _sidebar.create(_form, rectangle{TBW,TH,SBW,FH-TH});
+        _sidebar.create(_form, rectangle{TBW,TH,unsigned(SBW),unsigned(FH-TH)});
         _sidebar.bgcolor(color_rgb(0xF0EFEb));
         _build_sidebar(SBW, FH-TH);
 
         // ── Tab area ─────────────────────────────────────────
-        _tab_area.create(_form, rectangle{TBW+SBW,TH,cw,FH-TH});
+        _tab_area.create(_form, rectangle{TBW+SBW,TH,unsigned(cw),unsigned(FH-TH)});
         _tab_area.bgcolor(color_rgb(0xE8E7E3));
 
-        _tabbar.create(_tab_area, rectangle{0,0,cw-64,TABH}, true);
+        _tabbar.create(_tab_area, rectangle{0, 0, unsigned(cw-64), unsigned(TABH)}, true);
         _tabbar.bgcolor(color_rgb(0xDDDCDB));
         _tabbar.events().activated([this](const arg_tabbar<std::string>& a){
-            _switch_tab(a.item_index);
+            _switch_tab(static_cast<std::size_t>(a.widget.activated()));
         });
 
-        _btn_tab_add.create(_tab_area, rectangle{cw-60,0,28,TABH}, true);
+        _btn_tab_add.create(_tab_area, rectangle{cw-60, 0, 28u, unsigned(TABH)}, true);
         _btn_tab_add.caption("+");
         _btn_tab_add.bgcolor(color_rgb(0xDDDCDB));
         _btn_tab_add.events().click([this]{ _add_tab(); });
 
-        _btn_tab_close.create(_tab_area, rectangle{cw-30,0,28,TABH}, true);
+        _btn_tab_close.create(_tab_area, rectangle{cw-30, 0, 28u, unsigned(TABH)}, true);
         _btn_tab_close.caption("×");
         _btn_tab_close.bgcolor(color_rgb(0xDDDCDB));
         _btn_tab_close.events().click([this]{ _close_tab(_active); });
@@ -687,7 +684,7 @@ private:
         int sy=8;
         auto sec=[&](const char* t){
             label* l=new label;
-            l->create(_sidebar,rectangle{8,sy,w-16,14},true);
+            l->create(_sidebar,rectangle{8,sy,unsigned(w-16),14u},true);
             l->caption(t);
             l->bgcolor(color_rgb(0xF0EFEb));
             sy+=17;
@@ -696,7 +693,7 @@ private:
         // File operations
         sec("FILE");
         auto fb=[&](button& b, const char* cap, int x, int bw){
-            b.create(_sidebar,rectangle{x,sy,bw,24},true);
+            b.create(_sidebar,rectangle{x,sy,unsigned(bw),24u},true);
             b.caption(cap);
             b.bgcolor(color_rgb(0xE4E3DF));
         };
@@ -797,7 +794,7 @@ private:
             ? ("Untitled "+std::to_string(_uid++))
             : _basename(file);
 
-        _tabbar.append(label, label);
+        _tabbar.append(label);
         std::size_t idx = _tabs.size();
 
         TabEntry te;
@@ -808,7 +805,7 @@ private:
         int cw = int(tab_sz.width);
         int ch = int(tab_sz.height) - 28;
 
-        te.canvas->create(_tab_area, rectangle{0,28,cw,ch});
+        te.canvas->create(_tab_area, rectangle{0,28,unsigned(cw),unsigned(ch)});
         te.canvas->bgcolor(colors::white);
         te.canvas->fg_color    = _cur_color;
         te.canvas->grad_color1 = _grad1;
