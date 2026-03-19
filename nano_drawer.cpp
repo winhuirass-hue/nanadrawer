@@ -592,7 +592,7 @@ private:
         // ── CSD titlebar ─────────────────────────────────────
         _titlebar.create(_form, "Nano Drawer", FW);
         _titlebar.on_close    = [this]{ _form.close(); };
-        _titlebar.on_minimize = [this]{ API::window_visible(_form, false); };
+        _titlebar.on_minimize = [this]{ API::show_window(_form, false); };
         _titlebar.on_maximize = [this]{
             static bool mx=false; mx=!mx;
             if (mx) API::window_size(_form, API::screen_size());
@@ -837,7 +837,7 @@ private:
     {
         if (idx>=_tabs.size()) return;
         for (std::size_t i=0;i<_tabs.size();++i)
-            API::window_visible(*_tabs[i].canvas, i==idx);
+            API::show_window(*_tabs[i].canvas, i==idx);
         _active = idx;
         _update_title();
     }
@@ -846,7 +846,7 @@ private:
     {
         if (_tabs.size()<=1) return;
         _tabbar.erase(idx);
-        API::close_window(*_tabs[idx].canvas);
+        _tabs[idx].canvas->close();
         _tabs.erase(_tabs.begin()+std::ptrdiff_t(idx));
         std::size_t next = idx<_tabs.size() ? idx : _tabs.size()-1;
         _active = next;
