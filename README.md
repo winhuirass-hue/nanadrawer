@@ -23,7 +23,7 @@ Brush · Pencil · Eraser · Fill (BFS bucket) · Gradient · Line · Rectangle 
 
 ### Prerequisites (Linux)
 ```bash
-sudo apt install build-essential cmake libx11-dev libxft-dev libfontconfig1-dev
+sudo apt install build-essential cmake libx11-dev libxft-dev libfontconfig1-dev libxcursor-dev
 ```
 
 ### Get Nana
